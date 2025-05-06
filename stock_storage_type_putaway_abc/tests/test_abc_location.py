@@ -1,14 +1,13 @@
-# Copyright 2019-2021 Camptocamp SA
-# Copyright 2019-2021 Jacques-Etienne Baudoux (BCIM) <je@bcim.be>
+# Copyright 2019 Camptocamp SA
+# Copyright 2019 Jacques-Etienne Baudoux (BCIM) <je@bcim.be>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
-from odoo.tests import TransactionCase
+from odoo.addons.base.tests.common import BaseCommon
 
 
-class TestAbcLocation(TransactionCase):
+class TestAbcLocation(BaseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
         ref = cls.env.ref
         cls.cardboxes_location_storage_type = ref(
             "stock_storage_type.location_storage_type_cardboxes"
