@@ -26,6 +26,7 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [stock_putaway_hook](stock_putaway_hook/) | 18.0.1.0.0 |  | Add hooks allowing modules to add more putaway strategies
+[stock_storage_type](stock_storage_type/) | 18.0.1.0.0 | [![jbaudoux](https://github.com/jbaudoux.png?size=30px)](https://github.com/jbaudoux) [![rousseldenis](https://github.com/rousseldenis.png?size=30px)](https://github.com/rousseldenis) | Manage packages and locations storage types
 
 [//]: # (end addons)
 
