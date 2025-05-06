@@ -6,7 +6,7 @@
     "summary": "Add hooks allowing modules to add more putaway strategies",
     "version": "17.0.1.0.0",
     "category": "Hidden",
-    "website": "https://github.com/OCA/stock-logistics-workflow",
+    "website": "https://github.com/OCA/stock-logistics-putaway",
     "author": "Camptocamp, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "depends": ["stock"],
