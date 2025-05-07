@@ -6,7 +6,7 @@
     "version": "14.0.1.3.0",
     "development_status": "Alpha",
     "category": "Warehouse Management",
-    "website": "https://github.com/OCA/wms",
+    "website": "https://github.com/OCA/stock-logistics-putaway",
     "author": "Camptocamp, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "application": False,
