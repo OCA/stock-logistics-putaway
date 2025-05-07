@@ -18,6 +18,7 @@ class StockLocation(models.Model):
     is_in_storage_buffer = fields.Boolean(
         compute="_compute_is_in_storage_buffer",
         store=True,
+        recursive=True,
     )
 
     @api.depends("storage_buffer_ids", "location_id.is_in_storage_buffer")
@@ -38,7 +39,7 @@ class StockLocation(models.Model):
     # add dependency
     @api.depends("is_in_storage_buffer")
     def _compute_location_is_empty(self):
-        super()._compute_location_is_empty()
+        return super()._compute_location_is_empty()
 
     def _select_final_valid_putaway_locations(self, limit=None):
         """Return the valid locations using the provided limit

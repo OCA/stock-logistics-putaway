@@ -8,7 +8,7 @@ class StockLocationStorageBuffer(models.Model):
     _name = "stock.location.storage.buffer"
     _description = "Location Storage Buffer"
 
-    MAX_LOCATIONS_IN_NAME_GET = 3
+    MAX_LOCATIONS_IN_DISPLAY_NAME = 3
     MAX_LOCATIONS_IN_HELP = 10
 
     buffer_location_ids = fields.Many2many(
@@ -74,15 +74,23 @@ class StockLocationStorageBuffer(models.Model):
             self._prepare_values_for_help_message(),
         )
 
-    def name_get(self):
-        result = []
+    @api.depends("buffer_location_ids.name")
+    def _compute_display_name(self):
         for record in self:
             name = ", ".join(
-                record.buffer_location_ids[: self.MAX_LOCATIONS_IN_NAME_GET].mapped(
+                record.buffer_location_ids[: self.MAX_LOCATIONS_IN_DISPLAY_NAME].mapped(
                     "name"
                 )
             )
-            if len(record.buffer_location_ids) > self.MAX_LOCATIONS_IN_NAME_GET:
+            if len(record.buffer_location_ids) > self.MAX_LOCATIONS_IN_DISPLAY_NAME:
                 name += ", ..."
-            result.append((record.id, name))
-        return result
+            record.display_name = name
+
+    def unlink(self):
+        buffer_locations = self.buffer_location_ids
+        res = super().unlink()
+        # Refresh '<stock.location>.is_in_storage_buffer' when removing a buffer.
+        # Odoo doesn't seem to refresh this value in such case (a cache invalidation
+        # on this field doesn't work neither).
+        buffer_locations._compute_is_in_storage_buffer()
+        return res

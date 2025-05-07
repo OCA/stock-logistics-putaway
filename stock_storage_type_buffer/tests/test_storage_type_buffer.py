@@ -124,7 +124,7 @@ class TestStorageTypeBuffer(TestStorageTypeCommon):
             move_line.location_dest_id, self.pallets_reserve_location.leaf_location_ids
         )
 
-    def test_buffer_name_get(self):
+    def test_buffer_display_name(self):
         self.assertEqual(self.storage_buffer.display_name, "Pallet Buffer")
 
         box_buffer = self.env["stock.location"].create(
@@ -139,7 +139,7 @@ class TestStorageTypeBuffer(TestStorageTypeCommon):
         self.storage_buffer.buffer_location_ids = (
             self.buffer_location + box_buffer + pallet_buffer_2 + pallet_buffer_3
         )
-        self.storage_buffer.invalidate_cache(fnames=["display_name"])
+        self.storage_buffer.invalidate_recordset(fnames=["display_name"])
         self.assertEqual(
             self.storage_buffer.display_name,
             "Pallet Buffer, Box Buffer, Pallet Buffer 2, ...",
