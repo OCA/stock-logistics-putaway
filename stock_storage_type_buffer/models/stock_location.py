@@ -24,7 +24,7 @@ class StockLocation(models.Model):
     @api.depends("storage_buffer_ids", "location_id.is_in_storage_buffer")
     def _compute_is_in_storage_buffer(self):
         for location in self:
-            if self.storage_buffer_ids:
+            if location.storage_buffer_ids:
                 location.is_in_storage_buffer = True
             else:
                 location.is_in_storage_buffer = (
