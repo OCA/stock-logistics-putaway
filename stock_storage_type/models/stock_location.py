@@ -278,14 +278,17 @@ class StockLocation(models.Model):
                 ).lot_id | rec.mapped("pending_in_move_line_ids.lot_id")
                 rec.location_will_contain_lot_ids = lots
 
-    @api.depends(
-        "quant_ids.quantity",
-        "pending_out_move_line_ids.quantity",
-        "pending_out_move_line_ids.picked",
-        "pending_in_move_ids",
-        "pending_in_move_line_ids",
-        "only_empty",
-    )
+    def _depends_location_is_empty(self):
+        return [
+            "quant_ids.quantity",
+            "pending_out_move_line_ids.quantity",
+            "pending_out_move_line_ids.picked",
+            "pending_in_move_ids",
+            "pending_in_move_line_ids",
+            "only_empty",
+        ]
+
+    @api.depends(lambda self: self._depends_location_is_empty())
     def _compute_location_is_empty(self):
         # No restriction should apply on customer/supplier/...
         # locations and we don't need to compute is empty
