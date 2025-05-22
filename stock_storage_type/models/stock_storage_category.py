@@ -198,10 +198,14 @@ class StockStorageCategory(models.Model):
                             OR(
                                 [
                                     [
-                                        ("location_is_empty", "=", False),
+                                        (
+                                            "fill_state",
+                                            "in",
+                                            ("filled", "being_filled"),
+                                        ),
                                         ("id", "in", lines_locations.ids),
                                     ],
-                                    [("location_is_empty", "=", True)],
+                                    [("fill_state", "in", ("empty", "being_emptied"))],
                                 ]
                             ),
                         ]
@@ -210,7 +214,7 @@ class StockStorageCategory(models.Model):
                 location_domain = AND(
                     [
                         location_domain,
-                        [("location_is_empty", "=", True)],
+                        [("fill_state", "in", ("empty", "being_emptied"))],
                     ]
                 )
         elif allow_new_product == "same":
