@@ -14,8 +14,6 @@
     "application": False,
     "installable": True,
     "depends": [
-        # odoo
-        "stock_delivery",
         # OCA/stock-logistics-tracking
         "stock_quant_package_dimension",
         # OCA/stock-logistics-warehouse

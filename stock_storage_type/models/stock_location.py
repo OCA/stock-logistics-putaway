@@ -524,9 +524,10 @@ class StockLocation(models.Model):
                     quants.package_id.height_in_m,
                 ),
             ]
-        package_weight_kg = quants.package_id.pack_weight_in_kg
-        if not package_weight_kg and quants.package_id.weight_is_kg:
-            package_weight_kg = quants.package_id.weight
+        package = quants.package_id
+        package_weight_kg = package.pack_weight_in_kg or package.sudo()._get_weight(
+            self.env.context.get("picking_id")
+        ).get(package)
         if package_weight_kg:
             pertinent_category_domain += [
                 "|",
