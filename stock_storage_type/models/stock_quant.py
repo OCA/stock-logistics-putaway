@@ -32,9 +32,11 @@ class StockQuant(models.Model):
                     ).format(storage=package_type.name, location=location.name)
                 )
             package = quant.package_id
-            package_weight_kg = package.pack_weight_in_kg or package.sudo()._get_weight(
-                self.env.context.get("picking_id")
-            ).get(package)
+            weight = (
+                package.sudo()
+                ._get_weight(self.env.context.get("picking_id"))
+                .get(package)
+            )
             package_quants = quant.package_id.mapped("quant_ids")
             package_products = package_quants.mapped("product_id")
             package_lots = package_quants.mapped("lot_id")
@@ -95,18 +97,15 @@ class StockQuant(models.Model):
                     max_h=category.max_height_in_m,
                     height=quant.package_id.height_in_m,
                 )
-            elif (
-                category.max_weight_in_kg
-                and package_weight_kg > category.max_weight_in_kg
-            ):
+            elif category.max_weight_in_kg and weight > category.max_weight_in_kg:
                 error = _(
                     "Storage Category {category} defines "
                     "max weight of {max_w} but the package is heavier: "
-                    "{weight_kg}."
+                    "{weight}."
                 ).format(
                     category=category.display_name,
                     max_w=category.max_weight_in_kg,
-                    weight_kg=package_weight_kg,
+                    weight=weight,
                 )
             # If we get here, it means there is a storage category
             #  allowing the package into the location

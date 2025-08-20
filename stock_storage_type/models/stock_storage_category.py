@@ -10,7 +10,6 @@ class StockStorageCategory(models.Model):
         selection_add=[("same_lot", "If lots are all the same")],
         ondelete={"same_lot": "cascade"},
     )
-
     computed_location_ids = fields.One2many(
         comodel_name="stock.location", inverse_name="computed_storage_category_id"
     )
@@ -19,17 +18,25 @@ class StockStorageCategory(models.Model):
         inverse_name="storage_category_id",
         string="Allow New Product Rules",
     )
-
-    # TODO: Move these fields in another module ?
     max_height = fields.Float(
         string="Max height (mm)",
         help="The max height supported for this storage category.",
     )
-
     max_height_in_m = fields.Float(
         help="Technical field, to speed up comparaisons",
         compute="_compute_max_height_in_m",
         store=True,
+    )
+    height_uom_id = fields.Many2one(
+        "uom.uom",
+        "Height Units of Measure",
+        domain=lambda self: [
+            ("category_id", "=", self.env.ref("uom.uom_categ_length").id)
+        ],
+        help="UoM for height",
+        default=lambda self: self.env[
+            "product.template"
+        ]._get_length_uom_id_from_ir_config_parameter(),
     )
     weight_uom_id = fields.Many2one(
         # Same as product.packing
@@ -44,12 +51,6 @@ class StockStorageCategory(models.Model):
             "product.template"
         ]._get_weight_uom_id_from_ir_config_parameter(),
     )
-    weight_uom_name = fields.Char(
-        # Same as product.packing
-        string="Weight unit of measure label",
-        related="weight_uom_id.name",
-        readonly=True,
-    )
     max_weight_in_kg = fields.Float(
         help="Technical field, to speed up comparaisons",
         compute="_compute_max_weight_in_kg",
@@ -58,11 +59,11 @@ class StockStorageCategory(models.Model):
     length_uom_id = fields.Many2one(
         # Same as product.packing
         "uom.uom",
-        "Dimensions Units of Measure",
+        "Length Units of Measure",
         domain=lambda self: [
             ("category_id", "=", self.env.ref("uom.uom_categ_length").id)
         ],
-        help="UoM for height",
+        help="UoM for length",
         default=lambda self: self.env[
             "product.template"
         ]._get_length_uom_id_from_ir_config_parameter(),
