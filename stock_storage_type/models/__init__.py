@@ -1,5 +1,4 @@
 from . import (
-    product_template,
     stock_location,
     stock_package_level,
     stock_package_type,
