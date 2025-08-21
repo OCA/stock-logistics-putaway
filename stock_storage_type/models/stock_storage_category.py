@@ -20,7 +20,6 @@ class StockStorageCategory(models.Model):
         string="Allow New Product Rules",
     )
 
-    # TODO: Move these fields in another module ?
     max_height = fields.Float(
         string="Max height (mm)",
         help="The max height supported for this storage category.",
@@ -58,11 +57,10 @@ class StockStorageCategory(models.Model):
     length_uom_id = fields.Many2one(
         # Same as product.packing
         "uom.uom",
-        "Dimensions Units of Measure",
+        "Max height Unit of Measure",
         domain=lambda self: [
             ("category_id", "=", self.env.ref("uom.uom_categ_length").id)
         ],
-        help="UoM for height",
         default=lambda self: self.env[
             "product.template"
         ]._get_length_uom_id_from_ir_config_parameter(),
