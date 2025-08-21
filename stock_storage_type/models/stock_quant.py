@@ -31,10 +31,12 @@ class StockQuant(models.Model):
                         "Location {location}"
                     ).format(storage=package_type.name, location=location.name)
                 )
-            package_weight_kg = (
-                quant.package_id.pack_weight_in_kg
-                or quant.package_id.estimated_pack_weight_kg
-            )
+            package = quant.package_id
+            package_weight_kg = package.pack_weight_in_kg
+            if not package_weight_kg:
+                package_weight_kg = package._get_weight(
+                    self.env.context.get("picking_id")
+                ).get(package)
             package_quants = quant.package_id.mapped("quant_ids")
             package_products = package_quants.mapped("product_id")
             package_lots = package_quants.mapped("lot_id")
