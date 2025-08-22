@@ -169,11 +169,6 @@ msgid ""
 msgstr ""
 
 #. module: stock_storage_type
-#: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_category__length_uom_id
-msgid "Dimensions Units of Measure"
-msgstr ""
-
-#. module: stock_storage_type
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_category_allow_new_product__display_name
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_category_allow_new_product_cond__display_name
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_location_sequence__display_name
@@ -297,6 +292,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_location__max_height
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_category__max_height
 msgid "Max height (mm)"
+msgstr ""
+
+#. module: stock_storage_type
+#: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_category__length_uom_id
+msgid "Max height Unit of Measure"
 msgstr ""
 
 #. module: stock_storage_type
@@ -578,11 +578,6 @@ msgstr ""
 msgid ""
 "This represents the Storage Category that will be used. It depends either on"
 " the category set on the location or on one of its parent."
-msgstr ""
-
-#. module: stock_storage_type
-#: model:ir.model.fields,help:stock_storage_type.field_stock_storage_category__length_uom_id
-msgid "UoM for height"
 msgstr ""
 
 #. module: stock_storage_type
