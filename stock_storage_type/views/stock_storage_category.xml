@@ -8,6 +8,13 @@
         <field name="model">stock.storage.category</field>
         <field name="inherit_id" ref="stock.stock_storage_category_form" />
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='max_weight']//parent::div" position="after">
+                <label for="max_height" />
+                <div class="o_row">
+                    <field name="max_height" class="oe_inline" />
+                    <field name="length_uom_id" class="oe_inline" />
+                </div>
+            </xpath>
             <notebook position="inside">
                 <page name="advanced" string="Advanced">
                     <group
