@@ -16,7 +16,6 @@
     "depends": [
         # OCA/stock-logistics-tracking
         "stock_quant_package_dimension",
-        "stock_quant_package_package_type",
         # OCA/stock-logistics-warehouse
         "stock_storage_category_capacity_name",
         "stock_location_pending_move",
