@@ -17,6 +17,17 @@ class StockQuantPackage(models.Model):
         compute="_compute_height_in_m",
         store=True,
     )
+    height = fields.Float(compute="_compute_height", store=True, readonly=False)
+
+    @api.depends("package_type_id", "product_packaging_id")
+    def _compute_height(self):
+        for package in self:
+            if package.product_packaging_id.height:
+                package.height = package.product_packaging_id.height
+            elif package.package_type_id:
+                package.height = package.package_type_id.height
+            else:
+                package.height = 0.0
 
     @api.depends("pack_weight", "weight_uom_id")
     def _compute_pack_weight_in_kg(self):
