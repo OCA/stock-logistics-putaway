@@ -218,6 +218,11 @@ msgid "Has Restrictions"
 msgstr "Ha restrizioni"
 
 #. module: stock_storage_type
+#: model:ir.model.fields,field_description:stock_storage_type.field_stock_quant_package__height
+msgid "Height"
+msgstr ""
+
+#. module: stock_storage_type
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_quant_package__height_in_m
 msgid "Height In M"
 msgstr "Altezza in metri"
@@ -661,9 +666,9 @@ msgid ""
 "away is applied."
 msgstr ""
 "Quando i colli con tipo {name} sono depositati, la strategia cerca una "
-"ubicazione disponibile nelle seguenti ubicazioni: <br/><br/>{message} <br/><"
-"br/><b>Nota</b>: questo accade finché queste ubicazioni <u>sono figlie della "
-"ubicazione destinazione del movimento di magazzino</u> o finché queste "
+"ubicazione disponibile nelle seguenti ubicazioni: <br/><br/>{message} <br/"
+"><br/><b>Nota</b>: questo accade finché queste ubicazioni <u>sono figlie "
+"della ubicazione destinazione del movimento di magazzino</u> o finché queste "
 "ubicazioni sono figlie dell'ubicazione di destinazione dopo che è stato "
 "eseguito il deposito (prodotto o categoria)."
 

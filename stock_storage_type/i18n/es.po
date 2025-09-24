@@ -208,6 +208,11 @@ msgid "Has Restrictions"
 msgstr "Tiene restricciones"
 
 #. module: stock_storage_type
+#: model:ir.model.fields,field_description:stock_storage_type.field_stock_quant_package__height
+msgid "Height"
+msgstr ""
+
+#. module: stock_storage_type
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_quant_package__height_in_m
 msgid "Height In M"
 msgstr "Altura En M"
