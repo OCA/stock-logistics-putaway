@@ -161,15 +161,6 @@ msgid "Created on"
 msgstr ""
 
 #. module: stock_storage_type
-#: model:ir.model.fields,help:stock_storage_type.field_product_product__package_type_id
-#: model:ir.model.fields,help:stock_storage_type.field_product_template__package_type_id
-msgid ""
-"Defines a 'default' package type for this product to be applied on packages "
-"without product packagings and on put-away computation based on package type "
-"for product not in a package"
-msgstr ""
-
-#. module: stock_storage_type
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_category_allow_new_product__display_name
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_category_allow_new_product_cond__display_name
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_location_sequence__display_name
@@ -348,12 +339,6 @@ msgid "Package Type"
 msgstr ""
 
 #. module: stock_storage_type
-#: model:ir.model.fields,field_description:stock_storage_type.field_product_product__package_type_id
-#: model:ir.model.fields,field_description:stock_storage_type.field_product_template__package_type_id
-msgid "Package type"
-msgstr ""
-
-#. module: stock_storage_type
 #. odoo-python
 #: code:addons/stock_storage_type/models/stock_quant.py:0
 msgid "Package type {storage} is not allowed into Location {location}"
@@ -372,11 +357,6 @@ msgstr ""
 #. module: stock_storage_type
 #: model:ir.model,name:stock_storage_type.model_stock_quant_package
 msgid "Packages"
-msgstr ""
-
-#. module: stock_storage_type
-#: model:ir.model,name:stock_storage_type.model_product_template
-msgid "Product"
 msgstr ""
 
 #. module: stock_storage_type

@@ -166,18 +166,6 @@ msgid "Created on"
 msgstr "Creado el"
 
 #. module: stock_storage_type
-#: model:ir.model.fields,help:stock_storage_type.field_product_product__package_type_id
-#: model:ir.model.fields,help:stock_storage_type.field_product_template__package_type_id
-msgid ""
-"Defines a 'default' package type for this product to be applied on packages "
-"without product packagings and on put-away computation based on package type "
-"for product not in a package"
-msgstr ""
-"Define un tipo de envase \"por defecto\" para este producto que se aplicará "
-"a los envases sin embalaje de producto y al cálculo de la salida de almacén "
-"basado en el tipo de envase para el producto que no esté en un envase"
-
-#. module: stock_storage_type
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_category_allow_new_product__display_name
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_category_allow_new_product_cond__display_name
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_storage_location_sequence__display_name
@@ -356,12 +344,6 @@ msgid "Package Type"
 msgstr "Tipo de embalaje"
 
 #. module: stock_storage_type
-#: model:ir.model.fields,field_description:stock_storage_type.field_product_product__package_type_id
-#: model:ir.model.fields,field_description:stock_storage_type.field_product_template__package_type_id
-msgid "Package type"
-msgstr "Tipo de embalaje"
-
-#. module: stock_storage_type
 #. odoo-python
 #: code:addons/stock_storage_type/models/stock_quant.py:0
 msgid "Package type {storage} is not allowed into Location {location}"
@@ -382,11 +364,6 @@ msgstr ""
 #: model:ir.model,name:stock_storage_type.model_stock_quant_package
 msgid "Packages"
 msgstr "Paquetes"
-
-#. module: stock_storage_type
-#: model:ir.model,name:stock_storage_type.model_product_template
-msgid "Product"
-msgstr "Producto"
 
 #. module: stock_storage_type
 #: model:ir.model.fields,field_description:stock_storage_type.field_stock_package_type__product_packaging_ids
@@ -672,6 +649,22 @@ msgid ""
 msgstr ""
 "campo técnico: lista de stock.lotes en la ubicación, ya sea ahora o en "
 "operaciones pendientes"
+
+#~ msgid ""
+#~ "Defines a 'default' package type for this product to be applied on "
+#~ "packages without product packagings and on put-away computation based on "
+#~ "package type for product not in a package"
+#~ msgstr ""
+#~ "Define un tipo de envase \"por defecto\" para este producto que se "
+#~ "aplicará a los envases sin embalaje de producto y al cálculo de la salida "
+#~ "de almacén basado en el tipo de envase para el producto que no esté en un "
+#~ "envase"
+
+#~ msgid "Package type"
+#~ msgstr "Tipo de embalaje"
+
+#~ msgid "Product"
+#~ msgstr "Producto"
 
 #, python-format
 #~ msgid ""
