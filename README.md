@@ -27,7 +27,7 @@ addon | version | maintainers | summary
 --- | --- | --- | ---
 [stock_picking_putaway_recompute](stock_picking_putaway_recompute/) | 18.0.1.0.0 | <a href='https://github.com/rousseldenis'><img src='https://github.com/rousseldenis.png' width='32' height='32' style='border-radius:50%;' alt='rousseldenis'/></a> | This module allows to recompute the picking operations putaways if configurations have changed
 [stock_putaway_hook](stock_putaway_hook/) | 18.0.1.0.0 |  | Add hooks allowing modules to add more putaway strategies
-[stock_storage_type](stock_storage_type/) | 18.0.1.2.0 | <a href='https://github.com/jbaudoux'><img src='https://github.com/jbaudoux.png' width='32' height='32' style='border-radius:50%;' alt='jbaudoux'/></a> <a href='https://github.com/rousseldenis'><img src='https://github.com/rousseldenis.png' width='32' height='32' style='border-radius:50%;' alt='rousseldenis'/></a> | Manage packages and locations storage types
+[stock_storage_type](stock_storage_type/) | 18.0.1.3.0 | <a href='https://github.com/jbaudoux'><img src='https://github.com/jbaudoux.png' width='32' height='32' style='border-radius:50%;' alt='jbaudoux'/></a> <a href='https://github.com/rousseldenis'><img src='https://github.com/rousseldenis.png' width='32' height='32' style='border-radius:50%;' alt='rousseldenis'/></a> | Manage packages and locations storage types
 [stock_storage_type_buffer](stock_storage_type_buffer/) | 18.0.1.0.0 |  | Exclude storage locations from put-away if their buffer is full
 [stock_storage_type_putaway_abc](stock_storage_type_putaway_abc/) | 18.0.1.0.0 |  | Advanced storage strategy ABC for WMS
 
