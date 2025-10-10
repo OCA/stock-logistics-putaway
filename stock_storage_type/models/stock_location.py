@@ -21,6 +21,7 @@ class StockLocation(models.Model):
         string="Computed Storage Category",
         compute="_compute_computed_storage_category_id",
         store=True,
+        index="btree_not_null",
         recursive=True,
         help=(
             "This represents the Storage Category that will be used. It depends "
