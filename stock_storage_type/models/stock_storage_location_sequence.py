@@ -6,7 +6,7 @@ from odoo import _, fields, models
 class StockStorageLocationSequence(models.Model):
     _name = "stock.storage.location.sequence"
     _description = "Sequence of locations to put-away the package type"
-    _order = "sequence"
+    _order = "sequence,id"
 
     package_type_id = fields.Many2one("stock.package.type", required=True)
     sequence = fields.Integer(required=True)
