@@ -370,20 +370,22 @@ ul.auto-toc {
 !! source digest: sha256:6e36c8777a8344a887ddb468cf6f69a1963e5ce6b7df3b88ac49f016b7508dc1
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/stock-logistics-putaway/tree/18.0/stock_storage_type_putaway_abc"><img alt="OCA/stock-logistics-putaway" src="https://img.shields.io/badge/github-OCA%2Fstock--logistics--putaway-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/stock-logistics-putaway-18-0/stock-logistics-putaway-18-0-stock_storage_type_putaway_abc"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/stock-logistics-putaway&amp;target_branch=18.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>This module implements chaotic storage ‘ABC’ according to Package Storage Type
-and Location Storage Type.</p>
-<p>The locations and products get an ‘a’, ‘b’ or ‘c’ storage (by default ‘b’).</p>
-<p>For the computation of the putaway, the locations are sorted first by max
-height which is a physical constraint to respect, then by ‘ABC’ as following:</p>
+<p>This module implements chaotic storage ‘ABC’ according to Package
+Storage Type and Location Storage Type.</p>
+<p>The locations and products get an ‘a’, ‘b’ or ‘c’ storage (by default
+‘b’).</p>
+<p>For the computation of the putaway, the locations are sorted first by
+max height which is a physical constraint to respect, then by ‘ABC’ as
+following:</p>
 <ul class="simple">
 <li>if the product is ‘a’, then locations are sorted by ‘a’, ‘b’, ‘c’</li>
 <li>if the product is ‘b’, then locations are sorted by ‘b’, ‘c’, ‘a’</li>
 <li>if the product is ‘c’, then locations are sorted by ‘c’, ‘b’, ‘a’</li>
 </ul>
-<p>Then by pack putaway sequence (this allow to favor for example some level or
-corridor), and finally randomly.</p>
-<p>The storage type putaway computation will then apply on the list of locations
-the additional restrictions and take the first valid location.</p>
+<p>Then by pack putaway sequence (this allow to favor for example some
+level or corridor), and finally randomly.</p>
+<p>The storage type putaway computation will then apply on the list of
+locations the additional restrictions and take the first valid location.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
