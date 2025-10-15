@@ -31,16 +31,6 @@ class StockLocation(models.Model):
                     location.location_id.is_in_storage_buffer
                 )
 
-    def _should_compute_location_is_empty(self):
-        if super()._should_compute_location_is_empty():
-            return True
-        return self.is_in_storage_buffer
-
-    def _depends_location_is_empty(self):
-        depends = super()._depends_location_is_empty()
-        depends.append("is_in_storage_buffer")
-        return depends
-
     def _select_final_valid_putaway_locations(self, limit=None):
         """Return the valid locations using the provided limit
 
