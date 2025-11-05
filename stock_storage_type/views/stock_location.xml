@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
+    <record id="view_location_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.location.tree.inherit (in stock_storage_type)</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_tree2" />
+        <field name="arch" type="xml">
+            <field name="storage_category_id" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+            <field name="storage_category_id" position="after">
+                <field
+                    name="computed_storage_category_id"
+                    readonly="1"
+                    groups="stock.group_stock_multi_locations"
+                />
+            </field>
+        </field>
+    </record>
     <record id="view_location_form_inherit" model="ir.ui.view">
         <field name="name">stock.location.form.inherit (in stock_storage_type)</field>
         <field name="model">stock.location</field>
