@@ -40,7 +40,7 @@ class StockLocation(models.Model):
         packaging=None,
         additional_qty=None,
     ):
-        if not self.putaway_rule_ids and self.env.context.get(
+        if not self.putaway_rule_ids.filtered(lambda rule: rule.product_id == product) and self.env.context.get(
             "allow_putaway_child_location"
         ):
             putaway_location = self._get_putaway_child_location(
