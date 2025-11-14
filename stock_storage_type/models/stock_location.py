@@ -4,7 +4,6 @@
 import logging
 
 from odoo import api, fields, models
-from odoo.fields import Command
 from odoo.tools import float_compare, index_exists, sql
 
 _logger = logging.getLogger(__name__)
@@ -651,29 +650,6 @@ class StockLocation(models.Model):
         valid_locations = self.browse(ordered_valid_location_ids)
         return valid_locations
 
-    @api.depends_context("fixed_child_internal_location")
-    def _compute_child_internal_location_ids(self):
-        """
-        This will override the child selection by setting self as
-        the only child.
-
-        TODO: Maybe adding a field on view location in order to compute this
-        without context changing
-        """
-        if self.env.context.get("fixed_child_internal_location"):
-            internal_location_id = self.env.context.get("fixed_child_internal_location")
-            internal_location = self.browse(internal_location_id)
-            if internal_location_id:
-                self.update(
-                    {
-                        "child_internal_location_ids": [
-                            Command.set(internal_location.ids)
-                        ]
-                    }
-                )
-        else:
-            return super()._compute_child_internal_location_ids()
-
     def _get_stock_storage_type_putaway_rules(
         self, product, package=None, packaging=None
     ):
@@ -725,9 +701,7 @@ class StockLocation(models.Model):
                 product=product, package=package, packaging=packaging
             )
             if not putaway_rules:
-                self_fixed_child = self.with_context(
-                    fixed_child_internal_location=self.id
-                )
+                self_fixed_child = self.with_context(locations=self)
                 return super(StockLocation, self_fixed_child)._get_putaway_strategy(
                     product,
                     quantity=quantity,
