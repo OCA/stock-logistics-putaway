@@ -21,7 +21,12 @@ class StockQuantPackage(models.Model):
 
     @api.depends("package_type_id", "product_packaging_id")
     def _compute_height(self):
+        no_override = self.env.context.get("_auto_assign_packaging")
         for package in self:
+            # Do not override package height when already set,
+            # in the context of auto_assign_packaging
+            if package.height and no_override:
+                continue
             if package.product_packaging_id.height:
                 package.height = package.product_packaging_id.height
             elif package.package_type_id:
