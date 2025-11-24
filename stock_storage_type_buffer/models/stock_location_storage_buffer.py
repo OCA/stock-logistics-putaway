@@ -47,7 +47,10 @@ class StockLocationStorageBuffer(models.Model):
     def buffers_have_capacity(self):
         self.ensure_one()
         buffer_locations = self.buffer_location_ids.leaf_location_ids
-        return any(location.location_is_empty for location in buffer_locations)
+        return any(
+            location.fill_state in ("empty", "being_emptied")
+            for location in buffer_locations
+        )
 
     def _help_message_location_items(self, records):
         items = records[: self.MAX_LOCATIONS_IN_HELP].mapped("display_name")

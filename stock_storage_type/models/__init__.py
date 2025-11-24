@@ -1,5 +1,6 @@
 from . import (
     stock_location,
+    stock_move_line,
     stock_package_level,
     stock_package_type,
     stock_quant,

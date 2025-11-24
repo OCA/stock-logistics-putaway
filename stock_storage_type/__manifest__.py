@@ -17,6 +17,7 @@
         # OCA/stock-logistics-tracking
         "stock_quant_package_dimension",
         # OCA/stock-logistics-warehouse
+        "stock_location_fill_state",
         "stock_storage_category_capacity_name",
         "stock_location_pending_move",
         # OCA/stock-logistics-workflow

@@ -4,7 +4,7 @@
 import logging
 
 from odoo import api, fields, models
-from odoo.tools import float_compare, index_exists, sql
+from odoo.tools import float_compare, groupby, index_exists, sql
 
 _logger = logging.getLogger(__name__)
 OUT_MOVE_LINE_DOMAIN = [
@@ -57,15 +57,6 @@ class StockLocation(models.Model):
         "location_id",
         string="Storage locations sequences",
     )
-    location_is_empty = fields.Boolean(
-        compute="_compute_location_is_empty",
-        store=True,
-        help="technical field: True if the location is empty "
-        "and there is no pending incoming products in the location. "
-        " Computed only if the location needs to check for emptiness "
-        '(has an "only empty" policy).',
-        recursive=True,
-    )
     location_will_contain_lot_ids = fields.Many2many(
         "stock.lot",
         store=True,
@@ -114,6 +105,23 @@ class StockLocation(models.Model):
         compute="_compute_only_empty", store=True, recursive=True
     )
 
+    has_potential_product_mix_exception = fields.Boolean(
+        compute="_compute_has_potential_product_mix_exception",
+        store=True,
+        index=True,
+        help="This will represent a situation where several moves are pointing"
+        "to the location for different products and the location does"
+        "not allow mixed products.",
+    )
+    has_potential_lot_mix_exception = fields.Boolean(
+        compute="_compute_has_potential_lot_mix_exception",
+        store=True,
+        index=True,
+        help="This will represent a situation where several moves are pointing"
+        "to the location for different product lots and the location does"
+        "not allow mixed lots.",
+    )
+
     def init(self):  # pylint: disable=missing-return
         super().init()
         if not index_exists(self._cr, "stock_move_line_location_state_index"):
@@ -126,6 +134,38 @@ class StockLocation(models.Model):
                     (state IS NULL OR state NOT IN ('cancel', 'done'))
                 """
             )
+
+    @api.depends("do_not_mix_lots", "location_will_contain_lot_ids", "fill_state")
+    def _compute_has_potential_lot_mix_exception(self):
+        locations_with_exception = self.browse()
+        locations_without_exception = self.browse()
+        for location in self:
+            if (
+                location.fill_state not in ("empty", "being_emptied")
+                and location._should_compute_will_contain_lot_ids()
+                and len(location.location_will_contain_lot_ids) > 1
+            ):
+                locations_with_exception |= location
+            else:
+                locations_without_exception |= location
+        locations_with_exception.has_potential_lot_mix_exception = True
+        locations_without_exception.has_potential_lot_mix_exception = False
+
+    @api.depends("do_not_mix_lots", "location_will_contain_product_ids", "fill_state")
+    def _compute_has_potential_product_mix_exception(self):
+        locations_with_exception = self.browse()
+        locations_without_exception = self.browse()
+        for location in self:
+            if (
+                location.fill_state not in ("empty", "being_emptied")
+                and location._should_compute_will_contain_product_ids()
+                and len(location.location_will_contain_product_ids) > 1
+            ):
+                locations_with_exception |= location
+            else:
+                locations_without_exception |= location
+        locations_with_exception.has_potential_product_mix_exception = True
+        locations_without_exception.has_potential_product_mix_exception = False
 
     @api.depends(
         "usage",
@@ -238,13 +278,11 @@ class StockLocation(models.Model):
     def _should_compute_will_contain_lot_ids(self):
         return self.do_not_mix_lots
 
-    def _should_compute_location_is_empty(self):
-        return self.only_empty
-
     @api.depends(
         "quant_ids.quantity",
         "pending_in_move_ids",
         "pending_in_move_line_ids",
+        "pending_out_move_line_ids",
         "do_not_mix_products",
     )
     def _compute_location_will_contain_product_ids(self):
@@ -253,18 +291,53 @@ class StockLocation(models.Model):
                 no_product = self.env["product.product"].browse()
                 rec.location_will_contain_product_ids = no_product
             else:
-                products = (
-                    rec.mapped("quant_ids")
-                    .filtered(lambda q: q.quantity > 0)
-                    .product_id
-                    | rec.mapped("pending_in_move_ids.product_id")
-                    | rec.mapped("pending_in_move_line_ids.product_id")
+                non_fully_reserved_quants = rec.quant_ids.filtered(
+                    lambda q: float_compare(
+                        q.quantity, 0, precision_rounding=q.product_uom_id.rounding
+                    )
+                    > 0
+                    and float_compare(
+                        q.reserved_quantity,
+                        q.quantity,
+                        precision_rounding=q.product_uom_id.rounding,
+                    )
+                    < 0
                 )
+                # Products that are obviously in the location
+                products = (
+                    non_fully_reserved_quants.product_id
+                    | rec.mapped("pending_in_move_line_ids.product_id")
+                    | rec.mapped("pending_in_move_ids.product_id")
+                )
+                # For fully reserved quants, ensure the product is not being emptied
+                remaining_quants = rec.quant_ids.filtered(
+                    lambda q, products=products: q.product_id not in products
+                )
+                if remaining_quants:
+                    for product, quants_by_product in groupby(
+                        remaining_quants, lambda q: q.product_id
+                    ):
+                        quantity = sum(map(lambda q: q.quantity, quants_by_product))
+                        picked_quantity = sum(
+                            ml._get_qty_picked()
+                            for ml in rec.pending_out_move_line_ids
+                            if ml.product_id == product and ml.picked
+                        )
+                        if (
+                            float_compare(
+                                quantity,
+                                picked_quantity,
+                                precision_rounding=product.uom_id.rounding,
+                            )
+                            > 0
+                        ):
+                            products |= product
                 rec.location_will_contain_product_ids = products
 
     @api.depends(
         "quant_ids.quantity",
         "pending_in_move_line_ids",
+        "pending_out_move_line_ids",
         "do_not_mix_lots",
     )
     def _compute_location_will_contain_lot_ids(self):
@@ -273,64 +346,48 @@ class StockLocation(models.Model):
                 no_lot = self.env["stock.lot"].browse()
                 rec.location_will_contain_lot_ids = no_lot
             else:
-                lots = rec.mapped("quant_ids").filtered(
-                    lambda q: q.quantity > 0
-                ).lot_id | rec.mapped("pending_in_move_line_ids.lot_id")
+                non_fully_reserved_quants = rec.quant_ids.filtered(
+                    lambda q: float_compare(
+                        q.quantity, 0, precision_rounding=q.product_uom_id.rounding
+                    )
+                    > 0
+                    and float_compare(
+                        q.reserved_quantity,
+                        q.quantity,
+                        precision_rounding=q.product_uom_id.rounding,
+                    )
+                    < 0
+                )
+                # Lots that are obviously in the location
+                lots = non_fully_reserved_quants.lot_id | rec.mapped(
+                    "pending_in_move_line_ids.lot_id"
+                )
+                # For fully reserved quants, ensure the lot is not being emptied
+                remaining_quants = rec.quant_ids.filtered(
+                    lambda q, lots=lots: q.lot_id and q.lot_id not in lots
+                )
+                if remaining_quants:
+                    for lot, quants_by_product in groupby(
+                        remaining_quants, lambda q: q.lot_id
+                    ):
+                        quantity = sum(map(lambda q: q.quantity, quants_by_product))
+                        picked_quantity = sum(
+                            ml.qty_picked
+                            if hasattr(rec.pending_out_move_line_ids, "qty_picked")
+                            else ml.quantity_product_uom
+                            for ml in rec.pending_out_move_line_ids
+                            if ml.lot_id == lot and ml.picked
+                        )
+                        if (
+                            float_compare(
+                                quantity,
+                                picked_quantity,
+                                precision_rounding=lot.product_id.uom_id.rounding,
+                            )
+                            > 0
+                        ):
+                            lots |= lot
                 rec.location_will_contain_lot_ids = lots
-
-    def _depends_location_is_empty(self):
-        return [
-            "quant_ids.quantity",
-            "pending_out_move_line_ids.quantity",
-            "pending_out_move_line_ids.picked",
-            "pending_in_move_ids",
-            "pending_in_move_line_ids",
-            "only_empty",
-        ]
-
-    @api.depends(lambda self: self._depends_location_is_empty())
-    def _compute_location_is_empty(self):
-        # No restriction should apply on customer/supplier/...
-        # locations and we don't need to compute is empty
-        # if there is no limit on the location
-        only_empty_locations = self.filtered(
-            lambda loc: not loc._should_compute_location_is_empty()
-        )
-        only_empty_locations.update({"location_is_empty": True})
-        records = self - only_empty_locations
-        if not records:
-            return
-        location_domain = [("location_id", "in", records.ids)]
-        out_qty_by_location = {}
-        qty_by_location = {}
-        for group in self.env["stock.move.line"].read_group(
-            OUT_MOVE_LINE_DOMAIN + [("picked", "=", True)] + location_domain,
-            fields=["quantity:sum"],
-            groupby=["location_id"],
-        ):
-            location_id = group["location_id"][0]
-            out_qty_by_location[location_id] = group["quantity"]
-        for group in self.env["stock.quant"].read_group(
-            location_domain,
-            fields=["quantity:sum"],
-            groupby=["location_id"],
-        ):
-            location_id = group["location_id"][0]
-            qty_by_location[location_id] = group["quantity"]
-        for rec in records:
-            # we do want to keep a write here even if the value is the same
-            # to enforce concurrent transaction safety: 2 moves taking
-            # quantities in a location have to be executed sequentially
-            # or the location could remain "not empty"
-            if (
-                qty_by_location.get(rec.id, 0.0) - out_qty_by_location.get(rec.id, 0.0)
-                > 0
-                or rec.pending_in_move_ids
-                or rec.pending_in_move_line_ids
-            ):
-                rec.location_is_empty = False
-            else:
-                rec.location_is_empty = True
 
     # method provided by "stock_putaway_hook"
     def _putaway_strategy_finalizer(
@@ -631,18 +688,17 @@ class StockLocation(models.Model):
         valid_no_mix = valid_locations.filtered("do_not_mix_products")
         loc_ordered_by_qty = []
         if valid_no_mix:
-            StockQuant = self.env["stock.quant"]
-            domain_quant = [("location_id", "in", valid_no_mix.ids)]
-            loc_ordered_by_qty = [
-                item["location_id"][0]
-                for item in StockQuant.read_group(
-                    domain_quant,
-                    fields=["location_id", "quantity"],
-                    groupby=["location_id"],
-                    orderby="quantity",
+            for location, items in groupby(
+                valid_no_mix.quant_ids.sorted("quantity"),
+                lambda quant: quant.location_id,
+            ):
+                loc_ordered_by_qty.extend(
+                    [
+                        location.id
+                        for item in items
+                        if (float_compare(item["quantity"], 0, precision_digits=2) > 0)
+                    ]
                 )
-                if (float_compare(item["quantity"], 0, precision_digits=2) > 0)
-            ]
         valid_location_ids = set(valid_locations.ids) - set(loc_ordered_by_qty)
         ordered_valid_location_ids = loc_ordered_by_qty + [
             id_ for id_ in self.ids if id_ in valid_location_ids
