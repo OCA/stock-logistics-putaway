@@ -53,6 +53,14 @@ msgid "Product Moves (Stock Move Line)"
 msgstr ""
 
 #. module: stock_picking_putaway_recompute
+#. odoo-python
+#: code:addons/stock_picking_putaway_recompute/models/stock_move_line.py:0
+msgid ""
+"Recomputation of putaway is not allowed if not all move lines with same "
+"destination package were selected."
+msgstr ""
+
+#. module: stock_picking_putaway_recompute
 #: model_terms:ir.ui.view,arch_db:stock_picking_putaway_recompute.stock_picking_form_view
 #: model_terms:ir.ui.view,arch_db:stock_picking_putaway_recompute.view_stock_move_line_detailed_operation_tree
 msgid "Recompute Putaways"
