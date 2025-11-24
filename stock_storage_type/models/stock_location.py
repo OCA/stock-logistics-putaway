@@ -372,9 +372,7 @@ class StockLocation(models.Model):
                     ):
                         quantity = sum(map(lambda q: q.quantity, quants_by_product))
                         picked_quantity = sum(
-                            ml.qty_picked
-                            if hasattr(rec.pending_out_move_line_ids, "qty_picked")
-                            else ml.quantity_product_uom
+                            ml._get_qty_picked()
                             for ml in rec.pending_out_move_line_ids
                             if ml.lot_id == lot and ml.picked
                         )
