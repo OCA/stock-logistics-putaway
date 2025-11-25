@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-28 12:25+0000\n"
+"PO-Revision-Date: 2025-11-25 15:42+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -66,6 +66,8 @@ msgid ""
 "Recomputation of putaway is not allowed if not all move lines with same "
 "destination package were selected."
 msgstr ""
+"Il ricalcolo dell'inoltro non è consentito se non sono selezionate righe di "
+"movimento con lo stesso collo di destinazione."
 
 #. module: stock_picking_putaway_recompute
 #: model_terms:ir.ui.view,arch_db:stock_picking_putaway_recompute.stock_picking_form_view
