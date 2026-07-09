@@ -21,6 +21,8 @@ class ProductTemplate(models.Model):
         context = res.get("context")
         if not context:
             res["context"] = {
-                "invisible_handle": self.env.context.get("invisible_handle")
+                "from_product_form": True,
+                "invisible_handle": self.env.context.get("invisible_handle"),
             }
+        res["context"].update({"from_product_form": True})
         return res
