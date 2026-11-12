@@ -34,7 +34,9 @@ class StockMoveLine(models.Model):
 
     def _can_recompute_putaway_unsafe(self):
         self.ensure_one()
-        return self.picking_id._can_recompute_putaway()
+        # Lines without transfer (e.g. inventory adjustments, components of a
+        # manufacturing order) have no putaway to recompute
+        return bool(self.picking_id) and self.picking_id._can_recompute_putaway()
 
     def _filtered_for_putaway_recompute(self) -> Self:
         """
