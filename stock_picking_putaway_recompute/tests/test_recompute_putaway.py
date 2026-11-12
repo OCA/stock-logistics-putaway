@@ -355,3 +355,22 @@ class TestRecomputePutaway(TransactionCase):
         self.assertEqual(
             self.sub_location_1, self.picking.move_line_ids.location_dest_id
         )
+
+    def test_line_without_picking(self):
+        """Lines without transfer, e.g. of an inventory adjustment"""
+        product = self.env["product.product"].create(
+            {"name": "Storable product", "is_storable": True}
+        )
+        quant = self.env["stock.quant"].create(
+            {
+                "product_id": product.id,
+                "location_id": self.stock.id,
+                "inventory_quantity": 5.0,
+            }
+        )
+        quant.action_apply_inventory()
+        move_line = self.env["stock.move.line"].search(
+            [("product_id", "=", product.id), ("picking_id", "=", False)]
+        )
+        self.assertTrue(move_line)
+        self.assertFalse(move_line.can_recompute_putaways)
